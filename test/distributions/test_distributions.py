@@ -5831,6 +5831,8 @@ class TestKL(DistributionsTestCase):
         uniform_positive = pairwise(Uniform, [1, 1.5, 2, 4], [1.2, 2.0, 3, 7])
         uniform_real = pairwise(Uniform, [-2.0, -1, 0, 2], [-1.0, 1, 1, 4])
         uniform_pareto = pairwise(Uniform, [6.5, 7.5, 6.5, 8.5], [7.5, 8.5, 9.5, 9.5])
+        uniform_covering_unit = pairwise(Uniform, [0.0, -1, 0, -1], [1.0, 1, 2, 2])
+        uniform_touching_unit = pairwise(Uniform, [0.0, 0, 0.5, 0.2], [1.0, 0.5, 1, 1])
         continuous_bernoulli = pairwise(ContinuousBernoulli, [0.1, 0.2, 0.5, 0.9])
 
         # These tests should pass with precision = 0.01, but that makes tests very expensive.
@@ -5897,6 +5899,8 @@ class TestKL(DistributionsTestCase):
             (continuous_bernoulli, exponential),
             (continuous_bernoulli, normal),
             (beta, continuous_bernoulli),
+            (continuous_bernoulli, uniform_covering_unit),
+            (uniform_touching_unit, continuous_bernoulli),
         ]
 
         self.infinite_examples = [
