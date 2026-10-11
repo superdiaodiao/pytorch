@@ -1028,6 +1028,27 @@ class TestNN(NNTestCase):
         self.assertRaises(NotImplementedError, module_list)
         self.assertRaises(NotImplementedError, module_list, torch.rand(1, 3))
 
+    def test_ModuleList_insert(self):
+        for index in (0, 1, 3, -1, -3):
+            modules = [nn.ReLU(), nn.Sigmoid(), nn.Tanh()]
+            module_list = nn.ModuleList(modules)
+            new_module = nn.ELU()
+            modules.insert(index, new_module)
+            module_list.insert(index, new_module)
+            self.assertEqual(list(module_list._modules.keys()), [str(i) for i in range(4)])
+            for m1, m2 in zip(modules, module_list):
+                self.assertIs(m1, m2)
+
+        for index in (4, -4):
+            module_list = nn.ModuleList([nn.ReLU(), nn.Sigmoid(), nn.Tanh()])
+            before = list(module_list._modules.items())
+            with self.assertRaises(IndexError):
+                module_list.insert(index, nn.ELU())
+            after = list(module_list._modules.items())
+            self.assertEqual([k for k, _ in after], [k for k, _ in before])
+            for (_, m1), (_, m2) in zip(before, after):
+                self.assertIs(m1, m2)
+
     def test_ModuleDict(self):
         modules = OrderedDict([
             ('act', nn.ReLU()),

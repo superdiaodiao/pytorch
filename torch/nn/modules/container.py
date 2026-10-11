@@ -471,7 +471,12 @@ class ModuleList(Module):
             index (int): index to insert.
             module (nn.Module): module to insert
         """
-        for i in range(len(self._modules), index, -1):
+        n = len(self._modules)
+        if not (-n <= index <= n):
+            raise IndexError(f"Index out of range: {index}")
+        if index < 0:
+            index += n
+        for i in range(n, index, -1):
             self._modules[str(i)] = self._modules[str(i - 1)]
         self._modules[str(index)] = module
 
